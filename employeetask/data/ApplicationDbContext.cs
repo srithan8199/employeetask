@@ -1,9 +1,8 @@
 ﻿using employeetask.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 
-namespace employeetask.Data 
+namespace employeetask.Data
 {
     public class ApplicationDbContext : DbContext
     {

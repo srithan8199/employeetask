@@ -13,28 +13,51 @@ namespace employeetask.Managers
             _context = new ApplicationDbContext();
         }
 
+        
         public void AddEmployee()
         {
             try
             {
                 Console.WriteLine("Enter Employee Details:");
 
-                Console.Write("Name: ");
-                string name = Console.ReadLine();
+                string name;
+                while (true)
+                {
+                    Console.Write("Name: ");
+                    name = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(name)) break;
+                    Console.WriteLine("Name is required. Please enter a valid name.");
+                }
 
-                Console.Write("Age: ");
-                int age = int.Parse(Console.ReadLine());
+                int age;
+                while (true)
+                {
+                    Console.Write("Age: ");
+                    if (int.TryParse(Console.ReadLine(), out age) && age >= 18 && age <= 65) break;
+                    Console.WriteLine("Age must be between 18 and 65. Please enter a valid age.");
+                }
 
-                Console.Write("Department: ");
-                string department = Console.ReadLine();
+                string department;
+                while (true)
+                {
+                    Console.Write("Department: ");
+                    department = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(department)) break;
+                    Console.WriteLine("Department is required. Please enter a valid department.");
+                }
 
-                Console.Write("Salary: ");
-                double salary = double.Parse(Console.ReadLine());
+                double salary;
+                while (true)
+                {
+                    Console.Write("Salary: ");
+                    if (double.TryParse(Console.ReadLine(), out salary) && salary > 0) break;
+                    Console.WriteLine("Salary must be greater than zero. Please enter a valid salary.");
+                }
 
-                Employee employee = new Employee {Name = name, Age = age, Department = department, Salary = salary };
+                Employee employee = new Employee { Name = name, Age = age, Department = department, Salary = salary };
 
                 _context.Employees.Add(employee);
-                _context.SaveChanges(); 
+                _context.SaveChanges();
 
                 Console.WriteLine("Employee added successfully.");
             }
@@ -64,7 +87,17 @@ namespace employeetask.Managers
 
                 Console.Write("Enter new age (press enter to keep current): ");
                 string ageInput = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(ageInput)) employee.Age = int.Parse(ageInput);
+                if (!string.IsNullOrWhiteSpace(ageInput))
+                {
+                    if (int.TryParse(ageInput, out int age) && age >= 18 && age <= 65)
+                    {
+                        employee.Age = age;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid age. Keeping current age.");
+                    }
+                }
 
                 Console.Write("Enter new department (press enter to keep current): ");
                 string department = Console.ReadLine();
@@ -72,7 +105,17 @@ namespace employeetask.Managers
 
                 Console.Write("Enter new salary (press enter to keep current): ");
                 string salaryInput = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(salaryInput)) employee.Salary = double.Parse(salaryInput);
+                if (!string.IsNullOrWhiteSpace(salaryInput))
+                {
+                    if (double.TryParse(salaryInput, out double salary) && salary > 0)
+                    {
+                        employee.Salary = salary;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid salary. Keeping current salary.");
+                    }
+                }
 
                 _context.SaveChanges();
                 Console.WriteLine("Employee updated successfully.");
@@ -116,10 +159,10 @@ namespace employeetask.Managers
                 return;
             }
 
-            Console.WriteLine("ID\tName\tAge\tDepartment\tSalary");
+            Console.WriteLine("{0,-5} {1,-20} {2,-5} {3,-15} {4,-10}", "ID", "Name", "Age", "Department", "Salary");
             foreach (var employee in employees)
             {
-                Console.WriteLine($"{employee.Id}\t{employee.Name}\t{employee.Age}\t{employee.Department}\t{employee.Salary}");
+                Console.WriteLine("{0,-5} {1,-20} {2,-5} {3,-15} {4,-10}", employee.Id, employee.Name, employee.Age, employee.Department, employee.Salary);
             }
         }
     }
